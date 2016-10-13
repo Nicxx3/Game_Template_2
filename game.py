@@ -9,8 +9,10 @@ from gameparser import *
 
 def list_of_items(items):
     
+    #create a list
     items_name = []
     
+    #add all the items in the list
     for i in items:
         items_name.append(i["name"])
         
@@ -39,7 +41,9 @@ def list_of_items(items):
 
 def print_room_items(room):
     
+    #First check if there are items in the room. To prevent None print or error
     if len(list_of_items(room["items"])) != 0:
+        #print all available items in the room
         print("There is " , list_of_items(room["items"]) , " here.")
     
     
@@ -69,7 +73,9 @@ def print_room_items(room):
 
 def print_inventory_items(items):
     
+    #Check if the player has inventory items.
     if len(items) != 0:
+        #Print all available inventory items.
         print("You have " , list_of_items(items) , ".")
     
     
@@ -214,9 +220,11 @@ def print_menu(exits, room_items, inv_items):
         # Print the exit name and where it leads to
         print_exit(direction, exit_leads_to(exits, direction))
     
+    #Print what the player can take from the room. First "id" and then the "name"
     for item in room_items:
         print("TAKE " + item["id"].upper() + " to take ", item["name"])
     
+    #Print what the player can drop from the player's inventory
     for item in inv_items:
         print("DROP " + item["id"].upper() + " to drop ", item["name"])
     
@@ -246,11 +254,15 @@ def is_valid_exit(exits, chosen_exit):
 
 def execute_go(direction):
     
+    #we want to modify the global version of current_room. (Functions are private)
     global current_room
     
+    #Check if the input is a valid exit from the current_room
     if is_valid_exit(current_room["exits"], direction):
+        #move to the new room
         current_room = move(current_room["exits"], direction)
     else:
+        #if something else is written,in other words..not valid exit
         print("")
         print("You cannot go there." )
         print("")
@@ -264,14 +276,17 @@ def execute_go(direction):
 
 def execute_take(item_id):
     
+    #create a boolean to check if item is available/exists
     item_exists = False
-
+    
+    #Compare the input with the items in the room. if it exists take the item
     for item in current_room["items"]:
         if item_id == item["id"]:
             item_exists = True
             current_room["items"].remove(item)
             inventory.append(item)
             print(item["name"] + " added to inventory.")
+    #If the input item doesn't exist then: 
     if not item_exists:
         print("You cannot take that.")
         
@@ -286,14 +301,17 @@ def execute_take(item_id):
 
 def execute_drop(item_id):
     
+    #create a boolean to check if item is available/exists
     item_exists = False
-
+    
+    #Compare the input with the items in the inventory. if it exists drop the item
     for item in inventory:
         if item_id == item["id"]:
             item_exists = True
             inventory.remove(item)
             current_room["items"].append(item)
             print(item["name"] + " removed from inventory.")
+    #If the input item doesn't exist then:
     if not item_exists:
         print("You cannot drop that.")
     
